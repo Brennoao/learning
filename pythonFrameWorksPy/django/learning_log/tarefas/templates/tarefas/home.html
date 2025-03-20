@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles/mainPage.css' %}">
+</head>
+
+<body>
+    <main>
+        <h1 class="dName">Bem vindo {{name}}! Aqui estão as suas tarefas</h1>
+
+        <table class="mainTable">
+            <thead class="groupMainTable">
+                <th class="itemsHeadTable">Nome</th>
+                <th class="itemsHeadTable">Descrição</th>
+                <th class="itemsHeadTable">Situação</th>
+                <th class="itemsHeadTable">Data Criação</th>
+                <th class="itemsHeadTable">Editar</th>
+                <th class="itemsHeadTable">Remover</th>
+            </thead>
+            <tbody class="tableBody">
+                {% for tarefa in tarefas %}
+                <tr class="groupMainTable">
+                    <td class="itemsHeadTable">{{tarefa.name}}</td>
+                    <td class="itemsHeadTable">{{tarefa.description}}</td>
+                    <td class="itemsHeadTable">{% if tarefa.completed %}finalizado{% else %}trabalhando{% endif %}</td>
+                    <td class="itemsHeadTable">{{tarefa.completion_date}}</td>
+                    <td class="itemsHeadTable btn-edit"><a href="{% url 'tarefas:editar' tarefa.id %}"
+                            class="btnTableInside">Editar</a></td>
+                    <td class="itemsHeadTable btn-destructive"><a href="{% url 'tarefas:remover' tarefa.id %}"
+                            class="btnTableInside">Remover</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{% url 'tarefas:adicionar' %}" class="btn-addItem">Adicionar Tarefa</a>
+    </main>
+</body>
+
+</html>
