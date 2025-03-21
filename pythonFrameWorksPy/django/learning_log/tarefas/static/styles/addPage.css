@@ -1,0 +1,63 @@
+@import url(./style.css);
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+form {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* align-items: center; */
+    gap: 0.5em
+}
+
+div {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+label {
+    font-size: x-large;
+    margin-bottom: 4px;
+}
+
+input {
+    width: 100%;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 0.2em;
+}
+
+textarea {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 0.2em;
+}
+
+form :nth-last-child(2) {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.completedInput {
+    width: auto;
+    width: 20px;
+    height: 20px;
+    justify-self: flex-start;
+}
+
+.ultimo {
+    align-self: flex-end;
+    width: auto;
+    background: black;
+    color: white;
+    font-size: larger;
+}

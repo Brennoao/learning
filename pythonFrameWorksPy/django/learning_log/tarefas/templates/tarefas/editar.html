@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 
     {% load static %}
-    <link rel="stylesheet" href="{% static 'styles/editPage.css' %}">
-
+    <link rel="stylesheet" href="{% static 'styles/addPage.css' %}">
 </head>
+
 <body>
     <main>
-        <h1>Edite suas tarefas aqui </h1>
+        <h1>Adicione suas tarefas aqui </h1>
         <form action="" method="post">
             {% csrf_token %}
             {{form}}
-            <input type="submit" value="Enviar">
+            <input type="submit" value="Enviar" class="ultimo">
         </form>
     </main>
 </body>
+
 </html>
