@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block 'titulo' %} biblioteca | auth {% endblock %}
+
+{% block 'conteudo' %}
+
+<div class="container">
+    <br>
+    {% if status == '1' %}
+    <div class="alert alert-warning" role="alert">
+        Nome ou email em branco
+    </div>
+    {% endif %}
+
+    {% if status == '2' %}
+    <div class="alert alert-danger" role="alert">
+        o animal vai botar a senha não
+    </div>
+    {% endif %}
+
+    {% if status == '3' %}
+    <div class="alert alert-warning" role="alert">
+        usuario já existe no sistema
+    </div>
+    {% endif %}
+
+    {% if status == '4' %}
+    <div class="alert alert-danger" role="alert">
+        erro interno
+    </div>
+    {% endif %}
+    <br>
+
+    <div class="row">
+        <div class="col-md-3">
+
+        </div>
+
+        <div class="col-md">
+            <h1>Cadastre-se</h1>
+            <hr />
+
+            <form action="{% url 'valida_cadastro' %}" method="post" class="p-2">
+                {% csrf_token %}
+
+                <label for="">Nome</label>
+                <input name="nome" type="text" placeholder="Nome" class='form-control mb-2 mt-1'>
+
+                <label for="">Email</label>
+                <input name="email" type="email" placeholder="Password" class='form-control mb-2 mt-1'>
+
+                <label for="">Senha</label>
+                <input name="senha" type="password" placeholder="Nome" class='form-control mb-2 mt-1'>
+
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'login' %}" class="btn btn-warning btn-lg">Login</a>
+                    <input type="submit" value="Enviar" class="btn btn-info btn-lg">
+                </div>
+
+            </form>
+        </div>
+
+        <div class="col-md-3">
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

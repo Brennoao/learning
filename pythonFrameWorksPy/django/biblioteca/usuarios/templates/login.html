@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block 'titulo' %}Biblioteca | login{% endblock %}
+
+{% block 'conteudo' %}
+
+{% if status == '1' %}
+<div class="alert alert-warning" role="alert">
+    Email ou senha incorretos
+</div>
+{% endif %}
+
+{% if status == '2' %}
+<div class="alert alert-danger" role="alert">
+    faça o login antes de tentar acessar o sistema
+</div>
+{% endif %}
+<div class="row">
+    <div class="col-md-3">
+
+    </div>
+
+    <div class="col-md">
+        <h1>Login</h1>
+        <hr />
+
+        <form action="{% url 'valida_login' %}" method="post" class="p-2">
+            {% csrf_token %}
+
+            <label for="">Email</label>
+            <input name="email" type="email" placeholder="Nome" class='form-control mb-2 mt-1'>
+
+            <label for="">Senha</label>
+            <input name="senha" type="password" placeholder="Password" class='form-control mb-2 mt-1'>
+
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'cadastro' %}" class="btn btn-warning btn-lg">Cadastra-se</a>
+                <input type="submit" value="Enviar" class="btn btn-info btn-lg">
+            </div>
+
+        </form>
+    </div>
+
+    <div class="col-md-3">
+
+    </div>
+
+</div>
+</div>
+
+{% endblock %}

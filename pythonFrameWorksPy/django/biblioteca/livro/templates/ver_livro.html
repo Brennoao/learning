@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block 'titulo' %}biblioteca | {{livro.nome}}{% endblock %}
+
+{% block 'conteudo' %}
+
+<main class="containe mt-4">
+    <h1 class="text-center">{{livro.nome}}</h1>
+</main>
+
+{% endblock %}
