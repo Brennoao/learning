@@ -4,8 +4,71 @@
 
 {% block 'conteudo' %}
 
-<main class="containe mt-4">
-    <h1 class="text-center">{{livro.nome}}</h1>
+<main class="container">
+    <form action="" method="post" class="mt-4 d-flex flex-column gap-4">
+        {% csrf_token %}
+        <div class="form-floating">
+            <input class="form-control" type="text" name="" id="nome" value="{{livro.nome}}">
+            <label for="nome" class="">nome livro</label>
+        </div>
+
+        <div class="form-floating">
+            <input class="form-control" type="text" name="" id="autor" value="{{livro.autor}}">
+            <label for="autor" class="">nome autor</label>
+        </div>
+
+        <!-- <label for="co autor" class="">nome autor</label>
+        <input class="form-control" type="date" name="" id="nome" value="{{livro.co_autor}}"> -->
+
+        <div class="row">
+            <div class="col-3">
+                <label for="emprestado" class="">emprestado</label>
+                <input {% if livro.emprestado %} checked {% endif %} type="checkbox" name="emprestado"
+                    id="emprestado class='form-control">
+            </div>
+
+            <div class="col-9">
+                <select name="categoria" id="" class="form-control">
+                    {% for i in categoria %}
+                    {% if livro.categoria.nome == i.nome %}
+                    <option selected value="">{{i}}</option>
+                    {% else %}
+                    <option value="">{{i}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <input type="submit" value="Update" class="btn btn-success align-self-end">
+    </form>
+
+    <hr />
+    <h1>historico de emprestimo</h1>
+
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Data Emprestimo</th>
+                <th>Data Devolução</th>
+                <th>Tempo Duração</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for emprestimo in emprestimos %}
+            <tr>
+                {% if emprestimo.mome_emprestado == None %}
+                    <td>{{emprestimo.mome_emprestado}}</td>
+                {% else %}
+                    <td>{{emprestimo.mome_emprestado_anonimo}}</td>
+                {% endif %}
+                <td>{{emprestimo.data_emprestimo}}</td>
+                <td>{{emprestimo.data_devolucao}}</td>
+                <!-- <td>{{emprestimo.livro}}</td> -->
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </main>
 
 {% endblock %}
