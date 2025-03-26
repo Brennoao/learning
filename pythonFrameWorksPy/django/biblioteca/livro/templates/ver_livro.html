@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
+{% load filtros %}
 
 {% block 'titulo' %}biblioteca | {{livro.nome}}{% endblock %}
 
 {% block 'conteudo' %}
 
 <main class="container">
-    <form action="" method="post" class="mt-4 d-flex flex-column gap-4">
+    <form action="#" method="post" class="mt-4 d-flex flex-column gap-4">
         {% csrf_token %}
         <div class="form-floating">
             <input class="form-control" type="text" name="" id="nome" value="{{livro.nome}}">
@@ -39,7 +40,13 @@
                 </select>
             </div>
         </div>
-        <input type="submit" value="Update" class="btn btn-success align-self-end">
+
+        <div class="d-flex justify-content-between">
+            <input type="submit" value="Update" class="btn btn-success">
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Deletar
+              </button>
+        </div>
     </form>
 
     <hr />
@@ -57,18 +64,36 @@
         <tbody>
             {% for emprestimo in emprestimos %}
             <tr>
-                {% if emprestimo.mome_emprestado == None %}
-                    <td>{{emprestimo.mome_emprestado}}</td>
+                {% if emprestimo.mome_emprestado == '' %}
+                <td>{{emprestimo.mome_emprestado}}</td>
                 {% else %}
-                    <td>{{emprestimo.mome_emprestado_anonimo}}</td>
+                <td>{{emprestimo.mome_emprestado_anonimo}}</td>
                 {% endif %}
                 <td>{{emprestimo.data_emprestimo}}</td>
                 <td>{{emprestimo.data_devolucao}}</td>
-                <!-- <td>{{emprestimo.livro}}</td> -->
+                <td>{{emprestimo.data_devolucao|mostra_duracao:emprestimo.data_emprestimo}} Dias</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </main>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Ação sem volta</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h1>Deseja mesmo excluir??</h1>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="{% url 'excluir_livro' id_livro %}" type="button" class="btn btn-success">Deletar</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

@@ -12,6 +12,11 @@
 >> source venv/bin/activate
 >> ~~~
 
+> deactivate environment
+>> ~~~
+>> deactivate
+>> ~~~
+
 ## django
 
 > new project

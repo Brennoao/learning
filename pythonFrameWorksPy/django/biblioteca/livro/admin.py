@@ -5,4 +5,3 @@ from .models import Livros, Categoria, Emprestimos
 admin.site.register(Livros)
 admin.site.register(Categoria)
 admin.site.register(Emprestimos)
-# admin.site.register(Livros, Categoria, Emprestimos)
