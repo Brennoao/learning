@@ -14,22 +14,34 @@ def home(request):
         form = CadastroLivro()
         form.fields['usuario'].initial = identificador
         form.fields['categoria'].queryset = Categoria.objects.filter(usuario = usuario)
+
         form_categoria = CategoriaLivro()
         form_categoria.fields['usuario'].initial = identificador
 
-        return render(request, 'home.html', {'livros': livros, 'usuario_logado': identificador, 'form': form, 'form_categoria': form_categoria})
+        usuarios = Usuario.objects.all()
+
+        livros_emprestar = Livros.objects.filter(usuario = usuario).filter(emprestado = False)
+
+        return render(request, 'home.html', {'livros': livros, 'usuario_logado': identificador, 'form': form, 'form_categoria': form_categoria, 'usuarios': usuarios, 'livros_emprestar': livros_emprestar})
     else:
         return redirect('/auth/login/?status=2')
 
 def ver_livros(request, id):
     identificador = request.session['usuario']
-    if request.session.get('usuario'):
+    identificado1 = request.session.get('usuario')
+
+    if identificado1:
         livros = Livros.objects.get(id = id)
 
-        if request.session.get('usuario') == livros.usuario.id:
+        if identificado1 == livros.usuario.id:
             categoria_livro = Categoria.objects.filter(usuario_id = identificador)
             emprestimos = Emprestimos.objects.filter(livro = livros)
-            return render(request, 'ver_livro.html', {'livro': livros, 'categoria': categoria_livro, 'emprestimos': emprestimos, 'id_livro': id})
+
+            form_categoria = CategoriaLivro()
+            usuarios = Usuario.objects.all()
+            livros_emprestar = Livros.objects.filter(usuario = identificador).filter(emprestado = False)
+            
+            return render(request, 'ver_livro.html', {'livro': livros, 'categoria': categoria_livro, 'emprestimos': emprestimos, 'id_livro': id, 'livros_all': livros_emprestar, 'form_categoria': form_categoria, 'usuarios': usuarios})
         
         else:
             return HttpResponse('livro não existe')
@@ -62,3 +74,23 @@ def cadastrar_categoria(request):
                 return redirect('/livro/home')
         else:
             return HttpResponse('Formulário inválido')
+        
+def cadastrar_emprestimo(request):
+    if request.method == 'POST':
+        mome_emprestado = request.POST.get('mome_emprestado')
+        mome_emprestado_anonimo = request.POST.get('mome_emprestado_anonimo')
+        livro = request.POST.get('livro')
+
+        if mome_emprestado_anonimo :
+            emprestimo = Emprestimos(mome_emprestado_anonimo=mome_emprestado_anonimo, livro_id=livro)
+        else:
+            emprestimo = Emprestimos(mome_emprestado_id=mome_emprestado, livro_id=livro)
+            print(mome_emprestado)
+
+        emprestimo.save()
+
+        livro = Livros.objects.get(id = livro)
+        livro.emprestado = True
+        livro.save()
+
+        return redirect('/livro/home')

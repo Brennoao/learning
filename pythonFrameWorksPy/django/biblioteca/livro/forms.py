@@ -1,5 +1,5 @@
 from django import forms
-from .models import Livros, Categoria
+from .models import Livros, Categoria, Emprestimos
 
 class CadastroLivro(forms.ModelForm):
     class Meta:

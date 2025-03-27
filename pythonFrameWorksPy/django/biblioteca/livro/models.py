@@ -33,10 +33,10 @@ class Emprestimos(models.Model):
     )
     mome_emprestado = models.ForeignKey(Usuario, on_delete=models.DO_NOTHING, null=True, blank=True)
     mome_emprestado_anonimo = models.CharField(max_length=30, null=True, blank=True)
-    data_emprestimo = models.DateField(null=True, blank=True)
+    data_emprestimo = models.DateField(auto_now_add=True)
     data_devolucao = models.DateField(null=True, blank=True)
     livro = models.ForeignKey(Livros, on_delete=models.DO_NOTHING)
-    avaliacao = models.CharField(max_length=1, choices=choices)
+    avaliacao = models.CharField(max_length=1, choices=choices, null=True, blank=True)
 
     def __str__(self) -> str:
         return f"{self.mome_emprestado} | {self.livro}"
