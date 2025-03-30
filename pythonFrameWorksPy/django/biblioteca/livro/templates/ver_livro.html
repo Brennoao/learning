@@ -18,9 +18,6 @@
             <label for="autor" class="">nome autor</label>
         </div>
 
-        <!-- <label for="co autor" class="">nome autor</label>
-        <input class="form-control" type="date" name="" id="nome" value="{{livro.co_autor}}"> -->
-
         <div class="row">
             <div class="col-3">
                 <label for="emprestado" class="">emprestado</label>
@@ -45,7 +42,7 @@
             <input type="submit" value="Update" class="btn btn-success">
             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 Deletar
-              </button>
+            </button>
         </div>
     </form>
 
@@ -59,19 +56,27 @@
                 <th>Data Emprestimo</th>
                 <th>Data Devolução</th>
                 <th>Tempo Duração</th>
+                <th>Devolver</th>
             </tr>
         </thead>
         <tbody>
             {% for emprestimo in emprestimos %}
             <tr>
-                {% if emprestimo.mome_emprestado == '' %}
+                {% if emprestimo.mome_emprestado %}
                 <td>{{emprestimo.mome_emprestado}}</td>
                 {% else %}
                 <td>{{emprestimo.mome_emprestado_anonimo}}</td>
                 {% endif %}
                 <td>{{emprestimo.data_emprestimo}}</td>
                 <td>{{emprestimo.data_devolucao}}</td>
-                <td>{{emprestimo.data_devolucao|mostra_duracao:emprestimo.data_emprestimo}} Dias</td>
+                <td>{{emprestimo.data_devolucao|mostra_duracao:emprestimo.data_emprestimo}}</td>
+                <td>
+                    {% if emprestimo.data_devolucao %}
+                    <span>finalizado</span>
+                    {% else %}
+                    <a href="{% url 'devolver_livro' emprestimo.id %}">devolver</a>
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>

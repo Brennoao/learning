@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
+from datetime import datetime
 from usuarios.models import Usuario
 from .models import Livros, Categoria, Emprestimos
 from .forms import CadastroLivro, CategoriaLivro
@@ -9,7 +10,10 @@ def home(request):
 
     if identificador:
         usuario = Usuario.objects.get(id = identificador)
+
         livros = Livros.objects.filter(usuario = usuario)
+        livros_emprestar = Livros.objects.filter(usuario = usuario).filter(emprestado = False)
+        livros_total = livros.count()
 
         form = CadastroLivro()
         form.fields['usuario'].initial = identificador
@@ -20,9 +24,7 @@ def home(request):
 
         usuarios = Usuario.objects.all()
 
-        livros_emprestar = Livros.objects.filter(usuario = usuario).filter(emprestado = False)
-
-        return render(request, 'home.html', {'livros': livros, 'usuario_logado': identificador, 'form': form, 'form_categoria': form_categoria, 'usuarios': usuarios, 'livros_emprestar': livros_emprestar})
+        return render(request, 'home.html', {'livros': livros, 'usuario_logado': identificador, 'form': form, 'form_categoria': form_categoria, 'usuarios': usuarios, 'livros_emprestar': livros_emprestar, 'livros_total': livros_total})
     else:
         return redirect('/auth/login/?status=2')
 
@@ -94,3 +96,15 @@ def cadastrar_emprestimo(request):
         livro.save()
 
         return redirect('/livro/home')
+    
+def devolver_livro(request, id):
+    empretimo = get_object_or_404(Emprestimos, id=id)
+
+    livro = empretimo.livro
+    livro.emprestado = False
+    livro.save()
+
+    empretimo.data_devolucao = datetime.now()
+    empretimo.save()
+
+    return redirect(f'/livro/ver_livros/{livro.id}')

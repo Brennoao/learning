@@ -15,14 +15,28 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-dark bg-dark">
+    <header class="navbar navbar-dark bg-dark">
         <div class="container-fluid">
-            <a href="{% url 'home' %}" class="navbar-brand">Biblioteca</a>
+            <div>
+                <a href="{% url 'home' %}" class="navbar-brand">Biblioteca</a>
+            </div>
             {% if usuario_logado %}
-            <a href="{% url 'sair' %}" class="btn btn-danger">Sair</a>
+            <div class="dropdown dropstart">
+                <a class="btn btn-danger dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    User
+                </a>
+
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'sair' %}" class="dropdown-item bi bi-box-arrow-in-right"> Sair</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><p class="dropdown-item">Total de livros {{livros_total}}</p></li>
+                </ul>
+            </div>
+            
             {% endif %}
         </div>
-    </nav>
+    </header>
 
     {% block 'conteudo' %} {% endblock %}
 
