@@ -1,148 +1,124 @@
 {% extends 'base.html' %}
 
-{% block 'conteudo' %}
-<div class="container mt-4">
+{% block conteudo %}
+  <div class="container mt-4">
     <div class="row gap-4">
-        {% for livro in livros %}
+      {% for livro in livros %}
         <div class="col-md">
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">{{livro.nome}}</h5>
-                    <h6 class="card-subtitle mb-2 text-body-secondary">{{livro.autor|add:" |"}}{{livro.Categoria}}</h6>
-                    <p class="card-text {% if livro.emprestado %}text-danger{% else %}text-success{% endif %}">
-                        {% if livro.emprestado %}
-                        emprestado
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            class="bi bi-check-lg" viewBox="0 0 16 16">
-                            <path
-                                d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
-                        </svg>
-                        {% else %}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            class="bi bi-x-lg" viewBox="0 0 16 16">
-                            <path
-                                d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
-                        </svg>
-                        não emprestado
-                        {% endif %}
-                    </p>
-                    <a class="btn btn-outline-info" href="{% url 'ver_livros' livro.id %}">Acessar</a>
-                </div>
+          <div class="card" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">{{ livro.nome }}</h5>
+              <h6 class="card-subtitle mb-2 text-body-secondary">{{ livro.autor|add:' |' }}{{ livro.Categoria }}</h6>
+              <p class="card-text {% if livro.emprestado %}
+                  text-danger
+                {% else %}
+                  text-success
+                {% endif %}">
+                {% if livro.emprestado %}
+                  emprestado<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
+                  </svg>
+                {% else %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                    <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+                  </svg>não emprestado
+                {% endif %}
+              </p>
+              <a class="btn btn-outline-info" href="{% url 'ver_livros' livro.id %}">Acessar</a>
             </div>
+          </div>
         </div>
-        {% endfor %}
+      {% endfor %}
     </div>
-    <button
-        style="background: none; border: none!important; position: fixed; bottom: 0; right: 0; margin: 0 10px 10px 0; font-size: 30px;"
-        data-bs-target="#formModal" data-bs-toggle="modal" class="bi bi-plus-circle">
-    </button>
-
+    <button style="background: none; border: none!important; position: fixed; bottom: 0; right: 0; margin: 0 10px 10px 0; font-size: 30px;" data-bs-target="#formModal" data-bs-toggle="modal" class="bi bi-plus-circle"></button>
 
     <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="formModalLabel">Adicionar</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="formModalLabel">Adicionar</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <ul class="nav nav-tabs flex-column flex-sm-row" id="myTab" role="tablist">
+              <li class="nav-item flex-sm-fill text-sm-center" role="presentation">
+                <button class="nav-link active" id="Categoria-tab" data-bs-toggle="tab" data-bs-target="#Categoria-tab-pane" type="button" role="tab" aria-controls="Categoria-tab-pane" aria-selected="true">Categoria</button>
+              </li>
+              <li class="nav-item flex-sm-fill text-sm-center" role="presentation">
+                <button class="nav-link" id="Livros-tab" data-bs-toggle="tab" data-bs-target="#Livros-tab-pane" type="button" role="tab" aria-controls="Livros-tab-pane" aria-selected="false">Livros</button>
+              </li>
+              <li class="nav-item flex-sm-fill text-sm-center" role="presentation">
+                <button class="nav-link" id="Emprestimo-tab" data-bs-toggle="tab" data-bs-target="#Emprestimo-tab-pane" type="button" role="tab" aria-controls="Emprestimo-tab-pane" aria-selected="false">Emprestimo</button>
+              </li>
+            </ul>
+
+            <div class="tab-content" id="myTabContent">
+              <div class="tab-pane fade show active pt-4" id="Categoria-tab-pane" role="tabpanel" aria-labelledby="Categoria-tab" tabindex="0">
+                <form action="{% url 'cadastrar_categoria' %}" method="post">
+                  {% csrf_token %}
+                  <table>{{ form_categoria.as_table }}</table>
+
+                  <input type="submit" class="btn btn-primary mt-2" value="Salvar" />
+                </form>
+              </div>
+
+              <div class="tab-pane fade pt-4" id="Livros-tab-pane" role="tabpanel" aria-labelledby="Livros-tab" tabindex="0">
+                <form action="{% url 'cadastrar_livro' %}" method="post">
+                  {% csrf_token %}
+                  <table>{{ form.as_table }}</table>
+
+                  <input type="submit" class="btn btn-primary mt-2" value="Salvar" />
+                </form>
+              </div>
+
+              <div class="tab-pane fade pt-4" id="Emprestimo-tab-pane" role="tabpanel" aria-labelledby="Emprestimo-tab" tabindex="0">
+                <div class="d-fle flex-column gap-2 mb-2">
+                  <button onclick="exibe_input_empretado(1)" class="btn btn-success">Usuário existente</button>
+                  <button onclick="exibe_input_empretado(2)" class="btn btn-dark">Usuário anonimo</button>
                 </div>
-                <div class="modal-body">
-                    <ul class="nav nav-tabs flex-column flex-sm-row" id="myTab" role="tablist">
-                        <li class="nav-item flex-sm-fill text-sm-center" role="presentation">
-                            <button class="nav-link active" id="Categoria-tab" data-bs-toggle="tab"
-                                data-bs-target="#Categoria-tab-pane" type="button" role="tab"
-                                aria-controls="Categoria-tab-pane" aria-selected="true">Categoria</button>
-                        </li>
-                        <li class="nav-item flex-sm-fill text-sm-center" role="presentation">
-                            <button class="nav-link" id="Livros-tab" data-bs-toggle="tab"
-                                data-bs-target="#Livros-tab-pane" type="button" role="tab"
-                                aria-controls="Livros-tab-pane" aria-selected="false">Livros</button>
-                        </li>
-                        <li class="nav-item flex-sm-fill text-sm-center" role="presentation">
-                            <button class="nav-link" id="Emprestimo-tab" data-bs-toggle="tab"
-                                data-bs-target="#Emprestimo-tab-pane" type="button" role="tab"
-                                aria-controls="Emprestimo-tab-pane" aria-selected="false">Emprestimo</button>
-                        </li>
-                    </ul>
 
-                    <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active pt-4" id="Categoria-tab-pane" role="tabpanel"
-                            aria-labelledby="Categoria-tab" tabindex="0">
-                            <form action="{% url 'cadastrar_categoria' %}" method="post">
-                                {% csrf_token %}
-                                <table>
-                                    {{form_categoria.as_table}}
-                                </table>
+                <form action="{% url 'cadastrar_emprestimo' %}" method="post" class="d-flex flex-column gap-2">
+                  {% csrf_token %}
+                  <select name="mome_emprestado" id="mome_emprestado" class="form-select" style="display: none;">
+                    {% for usuario in usuarios %}
+                      <option value="{{ usuario.id }}" class="form-select">{{ usuario }}</option>
+                    {% endfor %}
+                  </select>
 
-                                <input type="submit" class="btn btn-primary mt-2" value="Salvar" />
-                            </form>
-                        </div>
+                  <div class="form-floating" style="display: none;" id="anonimo">
+                    <input type="text" name="mome_emprestado_anonimo" id="mome_emprestado_anonimo" class="form-control" placeholder="Usuario Anonimo" />
+                    <label for="mome_emprestado_anonimo">Usuario Anonimo</label>
+                  </div>
 
-                        <div class="tab-pane fade pt-4" id="Livros-tab-pane" role="tabpanel"
-                            aria-labelledby="Livros-tab" tabindex="0">
-                            <form action="{% url 'cadastrar_livro' %}" method="post">
-                                {% csrf_token %}
-                                <table>
-                                    {{form.as_table}}
-                                </table>
+                  <select name="livro" class="form-select">
+                    {% for livro in livros_emprestar %}
+                      <option value="{{ livro.id }}" class="form-select">{{ livro }}</option>
+                    {% endfor %}
+                  </select>
 
-                                <input type="submit" class="btn btn-primary mt-2" value="Salvar" />
-                            </form>
-                        </div>
-
-                        <div class="tab-pane fade pt-4" id="Emprestimo-tab-pane" role="tabpanel"
-                            aria-labelledby="Emprestimo-tab" tabindex="0">
-
-                            <div class="d-fle flex-column gap-2 mb-2">
-                                <button onclick="exibe_input_empretado(1)" class="btn btn-success">Usuário existente</button>
-                                <button onclick="exibe_input_empretado(2)" class="btn btn-dark">Usuário anonimo</button>
-                            </div>
-
-                            <form action="{% url 'cadastrar_emprestimo' %}" method="post"
-                                class="d-flex flex-column gap-2">
-                                {% csrf_token %}
-                                <select name="mome_emprestado" id="mome_emprestado" class="form-select" style="display: none;">
-                                    {% for usuario in usuarios %}
-                                    <option value="{{usuario.id}}" class="form-select">{{usuario}}</option>
-                                    {% endfor %}
-                                </select>
-
-                                <div class="form-floating" style="display: none;" id="anonimo">
-                                    <input type="text" name="mome_emprestado_anonimo" id="mome_emprestado_anonimo"
-                                        class="form-control" placeholder="Usuario Anonimo">
-                                    <label for="mome_emprestado_anonimo">Usuario Anonimo</label>
-                                </div>
-
-                                <select name="livro" class="form-select">
-                                    {% for livro in livros_emprestar %}
-                                    <option value="{{livro.id}}" class="form-select">{{livro}}</option>
-                                    {% endfor %}
-                                </select>
-
-                                <input type="submit" value="Salvar" class="btn btn-primary">
-                            </form>
-
-                        </div>
-                    </div>
-
-                    <div class="modal-footer mt-4">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
+                  <input type="submit" value="Salvar" class="btn btn-primary" />
+                </form>
+              </div>
             </div>
+
+            <div class="modal-footer mt-4">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
 
     <script>
-        function exibe_input_empretado(v1) {
-            if (v1 == 1) {
-                document.getElementById('mome_emprestado').style.display = 'block';
-                document.getElementById('anonimo').style.display = 'none';
-            }
-            else {
-                document.getElementById('mome_emprestado').style.display = 'none';
-                document.getElementById('anonimo').style.display = 'block';
-            }
+      function exibe_input_empretado(v1) {
+        if (v1 == 1) {
+          document.getElementById('mome_emprestado').style.display = 'block'
+          document.getElementById('anonimo').style.display = 'none'
+        } else {
+          document.getElementById('mome_emprestado').style.display = 'none'
+          document.getElementById('anonimo').style.display = 'block'
         }
+      }
     </script>
-</div>
+  </div>
 {% endblock %}

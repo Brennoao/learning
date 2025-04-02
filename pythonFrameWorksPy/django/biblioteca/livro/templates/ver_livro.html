@@ -1,162 +1,192 @@
 {% extends 'base.html' %}
 {% load filtros %}
 
-{% block 'titulo' %}biblioteca | {{livro.nome}}{% endblock %}
+{% block titulo %}
+  biblioteca | {{ livro.nome }}
+{% endblock %}
 
-{% block 'conteudo' %}
-
-<main class="container">
+{% block conteudo %}
+  <main class="container">
     <form action="{% url 'alterar_livro' %}" method="POST" class="mt-4 d-flex flex-column gap-4">
-        {% csrf_token %}
-        <input type="hidden" name="id" value="{{livro.id}}">
+      {% csrf_token %}
+      <input type="hidden" name="id" value="{{ livro.id }}" />
 
-        <div class="form-floating">
-            <input class="form-control" type="text" name="nome_livro" id="nome" value="{{livro.nome}}">
-            <label for="nome" class="">nome livro</label>
+      <div class="form-floating">
+        <input class="form-control" type="text" name="nome_livro" id="nome" value="{{ livro.nome }}" />
+        <label for="nome" class="">nome livro</label>
+      </div>
+
+      <div class="form-floating">
+        <input class="form-control" type="text" name="autor" id="autor" value="{{ livro.autor }}" />
+        <label for="autor" class="">nome autor</label>
+      </div>
+
+      <div class="form-floating">
+        <input class="form-control" type="text" name="co_autor" id="autor" value="{{ livro.co_autor }}" />
+        <label for="autor" class="">nome autor</label>
+      </div>
+
+      <div class="row">
+        <div class="col-3">
+          {% if livro.emprestado %}
+            <span>emprestado</span>
+            <span class="bi bi-check2"></span>
+          {% else %}
+            <span>não-emprestado</span>
+            <span class="bi bi-x-lg text-success"></span>
+          {% endif %}
         </div>
 
-        <div class="form-floating">
-            <input class="form-control" type="text" name="autor" id="autor" value="{{livro.autor}}">
-            <label for="autor" class="">nome autor</label>
+        <div class="col-9">
+          <select name="categoria" class="form-control">
+            {% for i in categoria %}
+              {% if livro.categoria.nome == i.nome %}
+                <option selected value="{{ livro.categoria_id }}">{{ i }}</option>
+              {% else %}
+                <option value="{{ i.id }}">{{ i }}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
         </div>
+      </div>
 
-        <div class="form-floating">
-            <input class="form-control" type="text" name="co_autor" id="autor" value="{{livro.co_autor}}">
-            <label for="autor" class="">nome autor</label>
-        </div>
-
-        <div class="row">
-            <div class="col-3">
-                {% if livro.emprestado %}
-                <span>emprestado</span>
-                <span class="bi bi-check2"></span>
-                {% else %}
-                <span>não-emprestado</span>
-                <span class="bi bi-x-lg text-success"></span>
-                {% endif %}
-            </div>
-
-            <div class="col-9">
-                <select name="categoria" class="form-control">
-                    {% for i in categoria %}
-                    {% if livro.categoria.nome == i.nome %}
-                    <option selected value="{{livro.categoria_id}}">{{i}}</option>
-                    {% else %}
-                    <option value="{{i.id}}">{{i}}</option>
-                    {% endif %}
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
-
-        <div class="d-flex justify-content-between">
-            <input type="submit" value="Update" class="btn btn-success">
-            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                Deletar
-            </button>
-        </div>
+      <div class="d-flex justify-content-between">
+        <input type="submit" value="Update" class="btn btn-success" />
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Deletar</button>
+      </div>
     </form>
 
     <hr />
     <h1>Histórico de emprestimos</h1>
 
     <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th scope="col">Nome</th>
-                <th scope="col">Data Emprestimo</th>
-                <th scope="col">Data Devolução</th>
-                <th scope="col">Tempo Duração</th>
-                <th scope="col">Devolver</th>
-                <th scope="col">Avaliação</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for emprestimo in emprestimos %}
-            <tr>
-                {% if emprestimo.mome_emprestado %}
-                <td>{{emprestimo.mome_emprestado}}</td>
+      <thead>
+        <tr>
+          <th scope="col">Nome</th>
+          <th scope="col">Data Emprestimo</th>
+          <th scope="col">Data Devolução</th>
+          <th scope="col">Tempo Duração</th>
+          <th scope="col">Devolver</th>
+          <th scope="col">Avaliação</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for emprestimo in emprestimos %}
+          <tr>
+            {% if emprestimo.mome_emprestado %}
+              <td>{{ emprestimo.mome_emprestado }}</td>
+            {% else %}
+              <td>{{ emprestimo.mome_emprestado_anonimo }}</td>
+            {% endif %}
+            <td>{{ emprestimo.data_emprestimo }}</td>
+            <td>{{ emprestimo.data_devolucao }}</td>
+            <td>{{ emprestimo.data_devolucao|mostra_duracao:emprestimo.data_emprestimo }}</td>
+            <td>
+              {% if emprestimo.data_devolucao %}
+                <span>finalizado</span>
+              {% else %}
+                <a href="{% url 'devolver_livro' emprestimo.id %}">devolver</a>
+              {% endif %}
+            </td>
+            <td>
+              {% if emprestimo.avaliacao == None and emprestimo.data_devolucao != None %}
+                <button data-bs-toggle="modal" data-bs-target="#modalAvaliacao" onclick="avaliacao('{{ emprestimo.id }}')">AVALIAR</button>
+              {% else %}
+                {% if emprestimo.data_devolucao == None %}
+                  <button disabled>AVALIAR</button>
                 {% else %}
-                <td>{{emprestimo.mome_emprestado_anonimo}}</td>
+                  {% if emprestimo.avaliacao == 'P' %}
+                    <section class="d-flex gap-2">
+                      <span class="bi bi-star"></span>
+                      <span class="bi bi-star"></span>
+                      <span class="bi bi-star"></span>
+                      <span class="bi bi-star"></span>
+                    </section>
+                  {% elif emprestimo.avaliacao == 'R' %}
+                    <section class="d-flex gap-2">
+                      <span class="bi bi-star-fill"></span>
+                      <span class="bi bi-star-fill"></span>
+                      <span class="bi bi-star"></span>
+                      <span class="bi bi-star"></span>
+                    </section>
+                  {% elif emprestimo.avaliacao == 'B' %}
+                    <section class="d-flex gap-2">
+                      <span class="bi bi-star-fill"></span>
+                      <span class="bi bi-star-fill"></span>
+                      <span class="bi bi-star-fill"></span>
+                      <span class="bi bi-star"></span>
+                    </section>
+                  {% elif emprestimo.avaliacao == 'O' %}
+                    <section class="d-flex gap-2">
+                      <span class="bi bi-star-fill"></span>
+                      <span class="bi bi-star-fill"></span>
+                      <span class="bi bi-star-fill"></span>
+                      <span class="bi bi-star-fill"></span>
+                    </section>
+                  {% endif %}
+                  {% comment %} <span>{{ emprestimo.avaliacao }}</span> {% endcomment %}
                 {% endif %}
-                <td>{{emprestimo.data_emprestimo}}</td>
-                <td>{{emprestimo.data_devolucao}}</td>
-                <td>{{emprestimo.data_devolucao|mostra_duracao:emprestimo.data_emprestimo}}</td>
-                <td>
-                    {% if emprestimo.data_devolucao %}
-                    <span>finalizado</span>
-                    {% else %}
-                    <a href="{% url 'devolver_livro' emprestimo.id %}">devolver</a>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if emprestimo.avaliacao == None %}
-                    <button data-bs-toggle="modal" data-bs-target="#modalAvaliacao" onclick="avaliacao('{{emprestimo.id}}')">AVALIAR</button>
-                    {% else %}
-                    <span>{{emprestimo.avaliacao}}</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
     </table>
-</main>
+  </main>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Ação sem volta</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <h1>Deseja mesmo excluir??</h1>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <a href="{% url 'excluir_livro' id_livro %}" type="button" class="btn btn-success">Deletar</a>
-            </div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Ação sem volta</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <div class="modal-body">
+          <h1>Deseja mesmo excluir??</h1>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <a href="{% url 'excluir_livro' id_livro %}" type="button" class="btn btn-success">Deletar</a>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<div class="modal fade" id="modalAvaliacao" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="modalAvaliacao" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Avaliar emprestimo</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="{% url 'processa_avaliacao' %}" method="post" class="d-flex flex-column gap-4">
-                    {% csrf_token %}
-                    <input type="hidden" name="id_livro" value="{{livro.id}}">
-                    <input type="hidden" name="id_emprestimo" id="id_emprestimo">
-
-                    <select name="avaliacao" class="form-select">
-                        <option value="P">Péssimo</option>
-                        <option value="R">Ruim</option>
-                        <option value="B">Bom</option>
-                        <option value="O">Ótimo</option>
-                    </select>
-
-                    <!-- <input type="submit" value="avaliar" class="btn btn-info"> -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </div>
-                </form>
-            </div>
-
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Avaliar emprestimo</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <div class="modal-body">
+          <form action="{% url 'processa_avaliacao' %}" method="post" class="d-flex flex-column gap-4">
+            {% csrf_token %}
+            <input type="hidden" name="id_livro" value="{{ livro.id }}" />
+            <input type="hidden" name="id_emprestimo" id="id_emprestimo" />
+
+            <select name="avaliacao" class="form-select">
+              <option value="P">Péssimo</option>
+              <option value="R">Ruim</option>
+              <option value="B">Bom</option>
+              <option value="O">Ótimo</option>
+            </select>
+
+            <!-- <input type="submit" value="avaliar" class="btn btn-info"> -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<script>
+  <script>
     function avaliacao(id_emprestimo) {
-        imput_emprestimo = document.getElementById('id_emprestimo');
-        imput_emprestimo.value = id_emprestimo
+      imput_emprestimo = document.getElementById('id_emprestimo')
+      imput_emprestimo.value = id_emprestimo
     }
-</script>
-
+  </script>
 {% endblock %}

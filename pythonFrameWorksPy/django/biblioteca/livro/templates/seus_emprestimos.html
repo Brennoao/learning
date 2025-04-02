@@ -1,76 +1,73 @@
 {% extends 'base.html' %}
 
-{% block 'titulo' %}biblioteca | Peguei_emprestado{% endblock %}
-{% block 'head' %}
-<style>
-    .goodCard {
-        display: flex;
-
-        width: 100%;
-
-        border: 1px solid red;
-        border-radius: 10px;
-
-        -webkit-box-shadow: 2px 2px 14px -3px rgba(0, 0, 0, 0.62);
-        -moz-box-shadow: 2px 2px 14px -3px rgba(0, 0, 0, 0.62);
-        box-shadow: 2px 2px 14px -3px rgba(0, 0, 0, 0.62);
-
-        overflow: hidden;
-        margin-bottom: 10px;
-    }
-
-    .goodBodyStart {
-        width: 100%;
-    }
-
-    .goodCardHeader {
-        background-color: red;
-        color: white;
-        padding: 10px;
-    }
-
-    .goodCardBodory {
-        padding: 5px;
-    }
-</style>
+{% block titulo %}
+  biblioteca | Peguei_emprestado
 {% endblock %}
 
-{% block 'conteudo' %}
+{% block head %}
+  <style>
+    .goodCard {
+      display: flex;
+    
+      width: 100%;
+    
+      border: 1px solid red;
+      border-radius: 10px;
+    
+      -webkit-box-shadow: 2px 2px 14px -3px rgba(0, 0, 0, 0.62);
+      -moz-box-shadow: 2px 2px 14px -3px rgba(0, 0, 0, 0.62);
+      box-shadow: 2px 2px 14px -3px rgba(0, 0, 0, 0.62);
+    
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    
+    .goodBodyStart {
+      width: 100%;
+    }
+    
+    .goodCardHeader {
+      background-color: red;
+      color: white;
+      padding: 10px;
+    }
+    
+    .goodCardBodory {
+      padding: 5px;
+    }
+  </style>
+{% endblock %}
 
-<div class="container pt-4">
+{% block conteudo %}
+  <div class="container pt-4">
     <h1 class="text-center mb-4">SEUS EMPRESTIMOS</h1>
     {% for emprestimo in emprestimos %}
-    <div class="goodCard">
-        <img src="data:image/png;base64,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"
-            alt="not Image">
+      <div class="goodCard">
+        <img src="data:image/png;base64,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" alt="not Image" />
 
         <div class="goodBodyStart">
-            <div class="goodCardHeader">
-                <h1 class="bi bi-book mb-0" style="font-size: 2rem;"> {{emprestimo.livro}}</h1>
+          <div class="goodCardHeader">
+            <h1 class="bi bi-book mb-0" style="font-size: 2rem;">{{ emprestimo.livro }}</h1>
+          </div>
+
+          <div class="goodCardBodory">
+            <div class="insideCardBody">
+              <label class="bi bi-calendar2-event">Data de emprestimo</label>
+              <p>{{ emprestimo.data_emprestimo }}</p>
             </div>
 
-            <div class="goodCardBodory">
-
-                <div class="insideCardBody">
-                    <label class="bi bi-calendar2-event"> Data de emprestimo</label>
-                    <p>{{emprestimo.data_emprestimo}}</p>
-                </div>
-
-                <div class="insideCardBody">
-                    
-                    {% if emprestimo.data_devolucao == None %}
-                    <label class="bi bi-calendar2-x"> Data da devolução</label>
-                    <p>Livro não devolvido</p>
-                    {% else %}
-                    <label class="bi bi-calendar2-check"> Data da devolução</label>
-                    <p>{{emprestimo.data_devolucao}}</p>
-                    {% endif %}
-                </div>
-
+            <div class="insideCardBody">
+              {% if emprestimo.data_devolucao == None %}
+                <label class="bi bi-calendar2-x">Data da devolução</label>
+                <p>Livro não devolvido</p>
+              {% else %}
+                <label class="bi bi-calendar2-check">Data da devolução</label>
+                <p>{{ emprestimo.data_devolucao }}</p>
+              {% endif %}
             </div>
+          </div>
         </div>
-    </div>
+      </div>
     {% endfor %}
-</div>
-
+  </div>
 {% endblock %}
