@@ -24,7 +24,16 @@ def home(request):
 
         usuarios = Usuario.objects.all()
 
-        return render(request, 'home.html', {'livros': livros, 'usuario_logado': identificador, 'form': form, 'form_categoria': form_categoria, 'usuarios': usuarios, 'livros_emprestar': livros_emprestar, 'livros_total': livros_total})
+        variavelHome = {
+            'livros': livros, 
+            'usuario_logado': identificador, 
+            'form': form, 
+            'form_categoria': form_categoria, 
+            'usuarios': usuarios, 
+            'livros_emprestar': livros_emprestar, 
+            'livros_total': livros_total
+        }
+        return render(request, 'home.html', variavelHome)
     else:
         return redirect('/auth/login/?status=2')
 
@@ -62,7 +71,7 @@ def cadastrar_livro(request):
 def excluir_livro(request, id):
     # identificador = request.session['usuario']
 
-    livro = Livros.objects.get(id = id).delete()
+    Livros.objects.get(id = id).delete()
     return redirect('/livro/home')
  
 def cadastrar_categoria(request):
@@ -108,3 +117,47 @@ def devolver_livro(request, id):
     empretimo.save()
 
     return redirect(f'/livro/ver_livros/{livro.id}')
+
+def alterar_livro(request):
+    livro_id = request.POST.get('id')
+    nome_livro = request.POST.get('nome_livro')
+    livro_autor = request.POST.get('autor')
+    livro_co_autor = request.POST.get('co_autor')
+    livro_categoria = request.POST.get('categoria')
+
+    livro = Livros.objects.get(id = livro_id)
+    if livro.usuario.id == request.session['usuario']:
+        livro.nome = nome_livro
+        livro.autor = livro_autor
+        livro.co_autor = livro_co_autor
+
+        livro.categoria = Categoria.objects.get(id=livro_categoria)
+
+        livro.save()
+
+        return redirect(f'/livro/ver_livros/{livro_id}')
+    else:
+        return redirect(f'/livro/ver_livros/{livro_id}')
+    
+def seus_emprestimos(request):
+    identificador = request.session['usuario']
+    usuario = Usuario.objects.get(id = identificador)
+    
+    emprestimos = Emprestimos.objects.filter(mome_emprestado=usuario)
+    print(emprestimos)
+
+    variavelSeusEmprestimos = {
+        'emprestimos': emprestimos,
+    }
+    return render(request, 'seus_emprestimos.html', variavelSeusEmprestimos)
+
+def processa_avaliacao(request):
+    id_emprestimo = request.POST.get('id_emprestimo')
+    livro_id = request.POST.get('livro_id')
+    avaliacao = request.POST.get('avaliacao')
+
+    emprestimo = Emprestimos.objects.get(id = id_emprestimo)
+    emprestimo.avaliacao = avaliacao
+    emprestimo.save()
+
+    return redirect(f'/livro/ver_livros/{livro_id}')

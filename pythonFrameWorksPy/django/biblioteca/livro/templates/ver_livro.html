@@ -6,32 +6,43 @@
 {% block 'conteudo' %}
 
 <main class="container">
-    <form action="#" method="post" class="mt-4 d-flex flex-column gap-4">
+    <form action="{% url 'alterar_livro' %}" method="POST" class="mt-4 d-flex flex-column gap-4">
         {% csrf_token %}
+        <input type="hidden" name="id" value="{{livro.id}}">
+
         <div class="form-floating">
-            <input class="form-control" type="text" name="" id="nome" value="{{livro.nome}}">
+            <input class="form-control" type="text" name="nome_livro" id="nome" value="{{livro.nome}}">
             <label for="nome" class="">nome livro</label>
         </div>
 
         <div class="form-floating">
-            <input class="form-control" type="text" name="" id="autor" value="{{livro.autor}}">
+            <input class="form-control" type="text" name="autor" id="autor" value="{{livro.autor}}">
+            <label for="autor" class="">nome autor</label>
+        </div>
+
+        <div class="form-floating">
+            <input class="form-control" type="text" name="co_autor" id="autor" value="{{livro.co_autor}}">
             <label for="autor" class="">nome autor</label>
         </div>
 
         <div class="row">
             <div class="col-3">
-                <label for="emprestado" class="">emprestado</label>
-                <input {% if livro.emprestado %} checked {% endif %} type="checkbox" name="emprestado"
-                    id="emprestado class='form-control">
+                {% if livro.emprestado %}
+                <span>emprestado</span>
+                <span class="bi bi-check2"></span>
+                {% else %}
+                <span>não-emprestado</span>
+                <span class="bi bi-x-lg text-success"></span>
+                {% endif %}
             </div>
 
             <div class="col-9">
-                <select name="categoria" id="" class="form-control">
+                <select name="categoria" class="form-control">
                     {% for i in categoria %}
                     {% if livro.categoria.nome == i.nome %}
-                    <option selected value="">{{i}}</option>
+                    <option selected value="{{livro.categoria_id}}">{{i}}</option>
                     {% else %}
-                    <option value="">{{i}}</option>
+                    <option value="{{i.id}}">{{i}}</option>
                     {% endif %}
                     {% endfor %}
                 </select>
@@ -47,16 +58,17 @@
     </form>
 
     <hr />
-    <h1>historico de emprestimo</h1>
+    <h1>Histórico de emprestimos</h1>
 
     <table class="table table-striped table-hover">
         <thead>
             <tr>
-                <th>Nome</th>
-                <th>Data Emprestimo</th>
-                <th>Data Devolução</th>
-                <th>Tempo Duração</th>
-                <th>Devolver</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Data Emprestimo</th>
+                <th scope="col">Data Devolução</th>
+                <th scope="col">Tempo Duração</th>
+                <th scope="col">Devolver</th>
+                <th scope="col">Avaliação</th>
             </tr>
         </thead>
         <tbody>
@@ -75,6 +87,13 @@
                     <span>finalizado</span>
                     {% else %}
                     <a href="{% url 'devolver_livro' emprestimo.id %}">devolver</a>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if emprestimo.avaliacao == None %}
+                    <button data-bs-toggle="modal" data-bs-target="#modalAvaliacao" onclick="avaliacao('{{emprestimo.id}}')">AVALIAR</button>
+                    {% else %}
+                    <span>{{emprestimo.avaliacao}}</span>
                     {% endif %}
                 </td>
             </tr>
@@ -100,5 +119,44 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modalAvaliacao" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Avaliar emprestimo</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'processa_avaliacao' %}" method="post" class="d-flex flex-column gap-4">
+                    {% csrf_token %}
+                    <input type="hidden" name="id_livro" value="{{livro.id}}">
+                    <input type="hidden" name="id_emprestimo" id="id_emprestimo">
+
+                    <select name="avaliacao" class="form-select">
+                        <option value="P">Péssimo</option>
+                        <option value="R">Ruim</option>
+                        <option value="B">Bom</option>
+                        <option value="O">Ótimo</option>
+                    </select>
+
+                    <!-- <input type="submit" value="avaliar" class="btn btn-info"> -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function avaliacao(id_emprestimo) {
+        imput_emprestimo = document.getElementById('id_emprestimo');
+        imput_emprestimo.value = id_emprestimo
+    }
+</script>
 
 {% endblock %}
