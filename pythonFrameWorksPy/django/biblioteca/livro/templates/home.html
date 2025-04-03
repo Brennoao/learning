@@ -1,18 +1,25 @@
 {% extends 'base.html' %}
 
 {% block conteudo %}
-  <div class="container mt-4">
-    <div class="row gap-4">
+  <main class="container mt-4">
+    <section class="row gap-4">
       {% for livro in livros %}
-        <div class="col-md">
-          <div class="card" style="width: 18rem;">
+        <div class="col overflow-hidden">
+          <div class="card border-danger border-2" style="max-width: 14rem;">
+            {% if livro.img.url != "" %}
+              <img src="{{ livro.img.url }}" class="card-img-top rounded-0" alt="imagem do livro" />
+            {% endif %}
             <div class="card-body">
               <h5 class="card-title">{{ livro.nome }}</h5>
               <h6 class="card-subtitle mb-2 text-body-secondary">{{ livro.autor|add:' |' }}{{ livro.Categoria }}</h6>
               <p class="card-text {% if livro.emprestado %}
+                  
                   text-danger
+
                 {% else %}
+                  
                   text-success
+
                 {% endif %}">
                 {% if livro.emprestado %}
                   emprestado<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
@@ -29,7 +36,7 @@
           </div>
         </div>
       {% endfor %}
-    </div>
+    </section>
     <button style="background: none; border: none!important; position: fixed; bottom: 0; right: 0; margin: 0 10px 10px 0; font-size: 30px;" data-bs-target="#formModal" data-bs-toggle="modal" class="bi bi-plus-circle"></button>
 
     <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
@@ -63,7 +70,7 @@
               </div>
 
               <div class="tab-pane fade pt-4" id="Livros-tab-pane" role="tabpanel" aria-labelledby="Livros-tab" tabindex="0">
-                <form action="{% url 'cadastrar_livro' %}" method="post">
+                <form action="{% url 'cadastrar_livro' %}" method="post" enctype="multipart/form-data">
                   {% csrf_token %}
                   <table>{{ form.as_table }}</table>
 
@@ -120,5 +127,5 @@
         }
       }
     </script>
-  </div>
+  </main>
 {% endblock %}

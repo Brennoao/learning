@@ -38,7 +38,6 @@ def home(request):
     else:
         return redirect('/auth/login/?status=2')
 
-
 def ver_livros(request, id):
     identificador = request.session['usuario']
     identificado1 = request.session.get('usuario')
@@ -53,8 +52,7 @@ def ver_livros(request, id):
 
             form_categoria = CategoriaLivro()
             usuarios = Usuario.objects.all()
-            livros_emprestar = Livros.objects.filter(
-                usuario=identificador).filter(emprestado=False)
+            livros_emprestar = Livros.objects.filter(usuario=identificador).filter(emprestado=False)
 
             return render(request, 'ver_livro.html', {'livro': livros, 'categoria': categoria_livro, 'emprestimos': emprestimos, 'id_livro': id, 'livros_all': livros_emprestar, 'form_categoria': form_categoria, 'usuarios': usuarios})
 
@@ -62,10 +60,11 @@ def ver_livros(request, id):
             return HttpResponse('livro não existe')
     return redirect('/auth/login/?status=2')
 
-
 def cadastrar_livro(request):
     if request.method == 'POST':
-        form = CadastroLivro(request.POST)
+        form = CadastroLivro(request.POST, request.FILES)
+
+        # return HttpResponse(request.FILES)
 
         if form.is_valid():
             form.save()
@@ -73,10 +72,7 @@ def cadastrar_livro(request):
         else:
             return HttpResponse('Formulário inválido')
 
-
 def excluir_livro(request, id):
-    # identificador = request.session['usuario']
-
     Livros.objects.get(id=id).delete()
     return redirect('/livro/home')
 
@@ -106,7 +102,6 @@ def cadastrar_emprestimo(request):
         else:
             emprestimo = Emprestimos(
                 mome_emprestado_id=mome_emprestado, livro_id=livro)
-            print(mome_emprestado)
 
         emprestimo.save()
 
@@ -157,7 +152,6 @@ def seus_emprestimos(request):
     usuario = Usuario.objects.get(id=identificador)
 
     emprestimos = Emprestimos.objects.filter(mome_emprestado=usuario)
-    print(emprestimos)
 
     variavelSeusEmprestimos = {
         'emprestimos': emprestimos,
@@ -170,8 +164,6 @@ def processa_avaliacao(request):
     livro_id = request.POST.get('id_livro')
     avaliacao = request.POST.get('avaliacao')
     id_logado = request.session['usuario']
-
-    print(livro_id)
 
     emprestimo = Emprestimos.objects.get(id=id_emprestimo)
     if emprestimo.livro.usuario.id == id_logado:
